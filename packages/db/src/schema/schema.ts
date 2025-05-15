@@ -11,3 +11,14 @@ export const post = pgTable("post", {
 	title: text().notNull(),
 	content: text().notNull(),
 });
+
+export const author = pgTable("author", {
+	id: uuid().primaryKey(),
+	createdAt: timestamp().defaultNow().notNull(),
+	updatedAt: timestamp()
+		.notNull()
+		.defaultNow()
+		.$onUpdate(() => new Date()),
+
+		name: text().notNull(),
+});

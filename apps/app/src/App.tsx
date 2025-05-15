@@ -5,15 +5,24 @@ import { useZero } from "./use-zero";
 function App() {
 	const zero = useZero();
 	const [posts] = useQuery(zero.query.post);
+	const [authors] = useQuery(zero.query.author);
+	console.log(authors);
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
 		const title = formData.get("title");
 		const content = formData.get("content");
 		const id = crypto.randomUUID();
-		zero.mutate.post.insert({
+		const authorId = crypto.randomUUID();
+		await zero.mutate.author.insert({
+			id: authorId,
+			name: "John Doe",
+			createdAt: Date.now(),
+			updatedAt: Date.now(),
+		});
+		await zero.mutate.post.insert({
 			id: id,
 			title: title as string,
 			content: content as string,
@@ -39,6 +48,10 @@ function App() {
 						Delete
 					</button>
 				</div>
+			))}
+			<h2>Authors</h2>
+			{authors.map((author) => (
+				<div key={author.id}>{author.name}</div>
 			))}
 
 			<h2>Create Post</h2>
